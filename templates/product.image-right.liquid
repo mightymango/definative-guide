@@ -13,6 +13,42 @@
     <div class="row">
 
       {%- comment -%}
+        Display product details (title, vendor, price and description) followed by an add to cart form.
+      {%- endcomment -%}
+      <div class="col-md-7">
+
+        {%- comment -%}
+          Product details for display on non-mobile.
+        {%- endcomment -%}
+        <div class="hidden-sm-down">
+          <h1>{{ product.title | escape }}</h1>
+          <h5 class="text-muted">{{ product.vendor | escape }}</h5>
+          <h3>{% if product.price_varies %}{{ product.price_min | money }} - {{ product.price_max | money }}{% else %}{{ product.price | money }}{% endif %}</h3>
+        </div>
+
+        {%- include 'product-details' -%}
+
+        <form action="/cart/add" method="post" role="form" class="mt-3">
+
+          {%- if product.variants.size > 1 -%}
+            <div class="form-group">
+              <label for="product-select">Select your {{ product.title | downcase }}</label>
+              <select id="product-select" name="id" class="form-control">
+                {%- for variant in product.variants -%}
+                  <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
+                {%- endfor -%}
+              </select>
+            </div>
+          {%- else =%}
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+          {%- endif -%}
+
+          <button type="submit" class="btn btn-primary btn-lg btn-xs-block" {% unless product.available %}disabled="disabled"{% endunless %}>Add to cart</button>
+
+        </form>
+      </div>
+
+      {%- comment -%}
         Display the product's images in a carousel format with sliding thumbnails at the bottom. If the product doesn't
         have any available images, a placeholder is display.
       {%- endcomment -%}
@@ -47,42 +83,6 @@
         {%- else -%}
           {{ 'image' | placeholder_svg_tag: 'd-block img-fluid bg-faded' }}
         {%- endif -%}
-      </div>
-
-      {%- comment -%}
-        Display product details (title, vendor, price and description) followed by an add to cart form.
-      {%- endcomment -%}
-      <div class="col-md-7">
-
-        {%- comment -%}
-          Product details for display on non-mobile.
-        {%- endcomment -%}
-        <div class="hidden-sm-down">
-          <h1>{{ product.title | escape }}</h1>
-          <h5 class="text-muted">{{ product.vendor | escape }}</h5>
-          <h3>{% if product.price_varies %}{{ product.price_min | money }} - {{ product.price_max | money }}{% else %}{{ product.price | money }}{% endif %}</h3>
-        </div>
-
-        {%- include 'product-details' -%}
-
-        <form action="/cart/add" method="post" role="form" class="mt-3">
-
-          {%- if product.variants.size > 1 -%}
-            <div class="form-group">
-              <label for="product-select">Select your {{ product.title | downcase }}</label>
-              <select id="product-select" name="id" class="form-control">
-                {%- for variant in product.variants -%}
-                  <option {% if variant == product.selected_or_first_available_variant %} selected="selected" {% endif %} value="{{ variant.id }}">{{ variant.title | escape }} - {{ variant.price | money }}</option>
-                {%- endfor -%}
-              </select>
-            </div>
-          {%- else =%}
-            <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
-          {%- endif -%}
-
-          <button type="submit" class="btn btn-primary btn-lg btn-xs-block" {% unless product.available %}disabled="disabled"{% endunless %}>Add to cart</button>
-
-        </form>
       </div>
 
     </div>
