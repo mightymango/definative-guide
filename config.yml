@@ -1,7 +1,7 @@
 development:
-  password: 50add912012ac2ffa59df7cb3bdc9083
-  theme_id: "43779522627"
-  store: living-streets.myshopify.com
+  password: 62337ebbb8ac30bc53abf9f1dc4186a2
+  theme_id: "36117676096"
+  store: mightymango-development.myshopify.com
   ignore_files:
   - .gitignore
   - README.md
